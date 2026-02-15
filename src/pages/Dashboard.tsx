@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import ComplianceScore from "@/components/ComplianceScore";
 import { RiskTrendChart, FilingStatusChart, StateComplianceChart, MonthlyActivityChart } from "@/components/DashboardCharts";
 import { DeadlineCards, RiskAlerts, ActivityTimeline, NewsFeed } from "@/components/DashboardWidgets";
-import { Users, FileText, ShieldCheck, AlertTriangle } from "lucide-react";
+import { Users, FileText, ShieldCheck, AlertTriangle, ClipboardList, ArrowRight } from "lucide-react";
 
 const stats = [
   { label: "Total Compliances", value: "59", icon: FileText, change: "+3 this month" },
@@ -58,6 +59,20 @@ export default function Dashboard() {
         <FilingStatusChart />
         <StateComplianceChart />
         <MonthlyActivityChart />
+      </motion.div>
+
+      {/* Compliance Checker CTA */}
+      <motion.div variants={item}>
+        <Link to="/compliance-checker" className="glass-card-hover p-5 flex items-center gap-4 group block">
+          <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center shrink-0">
+            <ClipboardList className="h-6 w-6 text-primary-foreground" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-bold text-foreground">Compliance Checker</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">Enter your business details to instantly discover all applicable compliances, deadlines & penalties</p>
+          </div>
+          <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+        </Link>
       </motion.div>
 
       {/* Activity + News */}
