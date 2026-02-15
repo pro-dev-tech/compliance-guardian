@@ -11,6 +11,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const navItems = [
   { title: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+  { title: "Compliance Checker", icon: ClipboardList, path: "/compliance-checker" },
   { title: "Compliance Calendar", icon: Calendar, path: "/calendar" },
   { title: "Risk Monitor", icon: ShieldAlert, path: "/risk-monitor" },
   { title: "AI Assistant", icon: Bot, path: "/ai-assistant" },

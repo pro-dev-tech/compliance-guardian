@@ -14,6 +14,7 @@ import AIAssistant from "@/pages/AIAssistant";
 import Integrations from "@/pages/Integrations";
 import Reports from "@/pages/Reports";
 import SettingsPage from "@/pages/Settings";
+import ComplianceChecker from "@/pages/ComplianceChecker";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/compliance-checker" element={<ProtectedRoute><ComplianceChecker /></ProtectedRoute>} />
             <Route path="/calendar" element={<ProtectedRoute><ComplianceCalendar /></ProtectedRoute>} />
             <Route path="/risk-monitor" element={<ProtectedRoute><RiskMonitor /></ProtectedRoute>} />
             <Route path="/ai-assistant" element={<ProtectedRoute><AIAssistant /></ProtectedRoute>} />
