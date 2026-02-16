@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/components/ThemeProvider";
+import { useSettings } from "@/contexts/SettingsContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const navItems = [
@@ -21,11 +22,7 @@ const navItems = [
   { title: "Settings", icon: Settings, path: "/settings" },
 ];
 
-const companies = [
-  { name: "Acme Pvt Ltd", initial: "A" },
-  { name: "TechVision India", initial: "T" },
-  { name: "GreenLeaf Exports", initial: "G" },
-];
+// Companies are now derived from settings context
 
 const demoNotifications = [
   { id: 1, text: "PF Return overdue by 2 days", time: "10 min ago", read: false },
@@ -39,13 +36,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const { profile, company } = useSettings();
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [companyOpen, setCompanyOpen] = useState(false);
-  const [selectedCompany, setSelectedCompany] = useState(companies[0]);
   const [notifications, setNotifications] = useState(demoNotifications);
+
+  const companyInitial = company.name.charAt(0).toUpperCase();
+  const profileInitials = `${profile.firstName.charAt(0)}${profile.lastName.charAt(0)}`;
+  const profileDisplayName = `${profile.firstName} ${profile.lastName.charAt(0)}.`;
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -104,7 +105,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
           {(sidebarOpen || isMobile) && (
             <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-lg font-bold gradient-primary-text whitespace-nowrap">
-              ComplianceAI
+              Nexus-Compliance
             </motion.span>
           )}
           {isMobile && sidebarOpen && (
@@ -170,33 +171,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 onClick={(e) => { e.stopPropagation(); setCompanyOpen(!companyOpen); }}
                 className="flex items-center gap-2 rounded-lg border border-border bg-secondary px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
               >
-                <div className="h-5 w-5 rounded bg-primary/20 flex items-center justify-center text-xs text-primary font-bold">{selectedCompany.initial}</div>
-                <span>{selectedCompany.name}</span>
+                <div className="h-5 w-5 rounded bg-primary/20 flex items-center justify-center text-xs text-primary font-bold">{companyInitial}</div>
+                <span>{company.name}</span>
                 <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${companyOpen ? "rotate-180" : ""}`} />
               </button>
-              <AnimatePresence>
-                {companyOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    className="absolute left-0 top-10 w-56 rounded-xl border border-border bg-card p-1 shadow-xl z-50"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    {companies.map(c => (
-                      <button
-                        key={c.name}
-                        onClick={() => { setSelectedCompany(c); setCompanyOpen(false); }}
-                        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${selectedCompany.name === c.name ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"}`}
-                      >
-                        <div className="h-6 w-6 rounded bg-primary/20 flex items-center justify-center text-xs text-primary font-bold">{c.initial}</div>
-                        <span>{c.name}</span>
-                        {selectedCompany.name === c.name && <Check className="h-4 w-4 ml-auto" />}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
           </div>
 
@@ -269,10 +247,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-secondary transition-colors"
               >
                 <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center text-sm font-bold text-primary-foreground">
-                  RA
+                  {profileInitials}
                 </div>
                 <div className="text-left hidden lg:block">
-                  <p className="text-sm font-medium text-foreground">Rahul A.</p>
+                  <p className="text-sm font-medium text-foreground">{profileDisplayName}</p>
                   <p className="text-xs text-muted-foreground">Admin</p>
                 </div>
               </button>

@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import ComplianceScore from "@/components/ComplianceScore";
 import { RiskTrendChart, FilingStatusChart, StateComplianceChart, MonthlyActivityChart } from "@/components/DashboardCharts";
-import { DeadlineCards, RiskAlerts, ActivityTimeline, NewsFeed } from "@/components/DashboardWidgets";
+import { DeadlineCards, RiskAlerts, ActivityTimeline } from "@/components/DashboardWidgets";
 import { Users, FileText, ShieldCheck, AlertTriangle, ClipboardList, ArrowRight, Newspaper } from "lucide-react";
 
 const stats = [
@@ -75,10 +75,9 @@ export default function Dashboard() {
         </Link>
       </motion.div>
 
-      {/* Activity + News */}
-      <motion.div variants={item} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Activity */}
+      <motion.div variants={item}>
         <ActivityTimeline />
-        <NewsFeed />
       </motion.div>
 
       {/* News Feed CTA */}

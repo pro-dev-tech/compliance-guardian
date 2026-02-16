@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SettingsProvider } from "@/contexts/SettingsContext";
 import AppLayout from "@/components/AppLayout";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -27,6 +28,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
+      <SettingsProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -48,6 +50,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
+      </SettingsProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
