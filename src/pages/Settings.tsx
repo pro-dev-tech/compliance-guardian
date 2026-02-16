@@ -2,6 +2,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Building, Bell, Shield, Palette, ChevronRight, Save, Check } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
+import { useSettings } from "@/contexts/SettingsContext";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 
 interface Section { id: string; icon: React.ElementType; title: string; description: string }
@@ -17,11 +19,9 @@ const sections: Section[] = [
 export default function SettingsPage() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const { theme, toggleTheme } = useTheme();
+  const { profile, setProfile, company, setCompany, accentColor, setAccentColor, accentPresets } = useSettings();
   const { toast } = useToast();
 
-  // Demo form states
-  const [profile, setProfile] = useState({ firstName: "Rahul", lastName: "Agarwal", email: "rahul@acmepvt.com", phone: "+91 98765 43210" });
-  const [company, setCompany] = useState({ name: "Acme Pvt Ltd", gstin: "27AABCU9603R1ZX", cin: "U72200MH2020PTC123456", state: "Maharashtra", employees: "35" });
   const [notifications, setNotifications] = useState({ email: true, sms: false, deadlineReminder: true, riskAlerts: true, newsUpdates: false, weeklyReport: true });
   const [twoFA, setTwoFA] = useState(false);
 
@@ -103,12 +103,10 @@ export default function SettingsPage() {
                   <p className="text-sm font-medium text-foreground">{item.label}</p>
                   <p className="text-xs text-muted-foreground">{item.desc}</p>
                 </div>
-                <button
-                  onClick={() => setNotifications(n => ({ ...n, [item.key]: !n[item.key] }))}
-                  className={`h-6 w-11 rounded-full transition-colors relative ${notifications[item.key] ? "bg-primary" : "bg-muted"}`}
-                >
-                  <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${notifications[item.key] ? "translate-x-5" : "translate-x-0.5"}`} />
-                </button>
+                <Switch
+                  checked={notifications[item.key]}
+                  onCheckedChange={(checked) => setNotifications(n => ({ ...n, [item.key]: checked }))}
+                />
               </div>
             ))}
             <button onClick={() => handleSave("Notification")} className="flex items-center gap-2 rounded-lg gradient-primary px-4 py-2 text-sm font-medium text-primary-foreground mt-2"><Save className="h-4 w-4" /> Save Preferences</button>
@@ -136,12 +134,13 @@ export default function SettingsPage() {
                   <p className="text-sm font-medium text-foreground">Two-Factor Authentication</p>
                   <p className="text-xs text-muted-foreground">Add extra security to your account</p>
                 </div>
-                <button
-                  onClick={() => { setTwoFA(!twoFA); toast({ title: twoFA ? "2FA Disabled" : "2FA Enabled", description: twoFA ? "Two-factor authentication has been disabled." : "Two-factor authentication is now active." }); }}
-                  className={`h-6 w-11 rounded-full transition-colors relative ${twoFA ? "bg-primary" : "bg-muted"}`}
-                >
-                  <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${twoFA ? "translate-x-5" : "translate-x-0.5"}`} />
-                </button>
+                <Switch
+                  checked={twoFA}
+                  onCheckedChange={(checked) => {
+                    setTwoFA(checked);
+                    toast({ title: checked ? "2FA Enabled" : "2FA Disabled", description: checked ? "Two-factor authentication is now active." : "Two-factor authentication has been disabled." });
+                  }}
+                />
               </div>
             </div>
             <div className="rounded-lg bg-secondary/50 p-3">
@@ -175,8 +174,16 @@ export default function SettingsPage() {
             <div className="rounded-lg bg-secondary/50 p-4">
               <p className="text-sm font-medium text-foreground mb-2">Accent Color</p>
               <div className="flex gap-3">
-                {["hsl(220 90% 56%)", "hsl(250 80% 62%)", "hsl(142 71% 45%)", "hsl(38 92% 50%)", "hsl(0 72% 51%)"].map(color => (
-                  <button key={color} className="h-8 w-8 rounded-full border-2 border-transparent hover:border-foreground transition-colors" style={{ background: color }} onClick={() => toast({ title: "Accent color changed", description: "Color preference saved." })} />
+                {accentPresets.map(preset => (
+                  <button
+                    key={preset.hsl}
+                    className={`h-8 w-8 rounded-full border-2 transition-colors ${accentColor === preset.hsl ? "border-foreground scale-110" : "border-transparent hover:border-foreground/50"}`}
+                    style={{ background: `hsl(${preset.hsl})` }}
+                    onClick={() => {
+                      setAccentColor(preset.hsl);
+                      toast({ title: "Accent color changed", description: `${preset.label} accent applied.` });
+                    }}
+                  />
                 ))}
               </div>
             </div>
